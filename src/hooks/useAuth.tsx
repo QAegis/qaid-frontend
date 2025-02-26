@@ -1,3 +1,5 @@
+"use client";
+
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 import authService, { User, LoginCredentials, RegisterData } from '../services/authServices';
 
@@ -23,13 +25,13 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
                 try {
                     const user = await authService.getProfile();
                     setUser(user);
-                } catch (error) {
+                } catch {
                     localStorage.removeItem('token');
                 }
             }
             setLoading(false);
         };
-
+    
         initAuth();
     }, []);
 
