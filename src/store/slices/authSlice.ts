@@ -3,7 +3,7 @@ import authService, {
     LoginCredentials,
     RegisterData,
     User
-} from '@/services/authServices';
+} from '@/services/authService';
 
 interface AuthState {
     user: User | null;

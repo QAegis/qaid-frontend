@@ -21,7 +21,7 @@ export interface RegisterData {
 }
 
 // Get API URL from environment variables
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001"; // Use backend URL
 
 // Create an Axios instance for API calls
 const apiClient = axios.create({
@@ -29,6 +29,7 @@ const apiClient = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
+    withCredentials: true, // Needed if using cookies
 });
 
 // Function to safely retrieve the token (prevents server-side errors)

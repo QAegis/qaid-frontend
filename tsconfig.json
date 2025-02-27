@@ -30,7 +30,7 @@
     ".next/types/**/*.ts", 
     "src/hooks/useProtectedRoute.js", 
     "src/hooks/useAuth.tsx", 
-    "src/services/authServices.ts"
+    "src/services/authService.ts"
   ], 
   "exclude": ["node_modules"]
 }

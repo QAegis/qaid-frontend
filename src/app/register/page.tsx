@@ -68,7 +68,7 @@ export default function RegisterPage() {
                         <input
                             id="name"
                             type="text"
-                            className="w-full p-2 border border-gray-300 rounded-lg text-[#333]"
+                            className="w-full p-2 border border-gray-300 rounded-lg text-[#343434]"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             required
@@ -122,7 +122,7 @@ export default function RegisterPage() {
                     </button>
                 </div>
 
-                <div className="mt-4 text-center">
+                <div className="mt-4 text-center text-[#333]">
                     <p>
                         Already have an account?{' '}
                         <Link href="/login" className="text-blue-600 hover:underline">

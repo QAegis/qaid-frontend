@@ -1,16 +1,16 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import authService, { User, LoginCredentials, RegisterData } from '../services/authServices';
+import authService, { User, LoginCredentials, RegisterData } from '../services/authService';
 
 // Define extended auth service interface with the missing methods
 interface AuthService {
-  login: (credentials: LoginCredentials) => Promise<{ access_token: string; user: User }>;
-  register: (data: RegisterData) => Promise<void>;
-  getProfile: () => Promise<User>;
-  logout: () => void;
-  forgotPassword?: (email: string) => Promise<void>; // Optional since it may not exist yet
-  resetPassword?: (token: string, password: string) => Promise<void>; // Optional since it may not exist yet
+    login: (credentials: LoginCredentials) => Promise<{ access_token: string; user: User }>;
+    register: (data: RegisterData) => Promise<void>;
+    getProfile: () => Promise<User>;
+    logout: () => void;
+    forgotPassword?: (email: string) => Promise<void>; // Optional since it may not exist yet
+    resetPassword?: (token: string, password: string) => Promise<void>; // Optional since it may not exist yet
 }
 
 // Cast the authService to our extended interface

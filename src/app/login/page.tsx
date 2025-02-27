@@ -67,7 +67,7 @@ export default function LoginPage() {
                         <input
                             id="email"
                             type="email"
-                            className="w-full p-2 border border-gray-300 rounded-lg"
+                            className="w-full p-2 border border-gray-300 rounded-lg text-[#333]"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -81,7 +81,7 @@ export default function LoginPage() {
                         <input
                             id="password"
                             type="password"
-                            className="w-full p-2 border border-gray-300 rounded-lg"
+                            className="w-full p-2 border border-gray-300 rounded-lg text-[#333]"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
@@ -106,7 +106,7 @@ export default function LoginPage() {
                     </button>
                 </div>
 
-                <div className="mt-4 text-center">
+                <div className="mt-4 text-center text-[#333]">
                     <p>
                         Don&apos;t have an account?{' '}
                         <Link href="/register" className="text-blue-600 hover:underline">
