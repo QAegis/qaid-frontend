@@ -3,6 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import LoginForm from '../../components/auth/LoginForm';
 import { login, googleLogin } from '../../services/authService';
 import { useAuth } from '../../hooks/useAuth';
+import { auth, provider } from '../../services/firebase';
+import { signInWithPopup } from 'firebase/auth';
 
 const LoginPage = () => {
     const [error, setError] = useState('');
@@ -32,7 +34,23 @@ const LoginPage = () => {
     };
 
     const handleGoogleLogin = async () => {
-        // Google login implementation
+        setError('');
+        setLoading(true);
+
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+
+            if (user) {
+                setCurrentUser(user);
+                navigate('/dashboard');
+            }
+        } catch (err) {
+            setError('Google login failed');
+            console.error(err);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (

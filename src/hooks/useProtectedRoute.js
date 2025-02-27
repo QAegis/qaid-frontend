@@ -1,18 +1,19 @@
-'use client';
-
 import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useAuth } from './useAuth';
 
 export function useProtectedRoute() {
     const { isAuthenticated, loading } = useAuth();
     const router = useRouter();
+    const pathname = usePathname();
+    
+    const isAuthRoute = pathname === '/login' || pathname === '/register';
 
     useEffect(() => {
-        if (!loading && !isAuthenticated) {
+        if (!loading && !isAuthenticated && !isAuthRoute) {
             router.push('/login');
         }
-    }, [isAuthenticated, loading, router]);
-
-    return { isLoading: loading };
+    }, [isAuthenticated, loading, router, isAuthRoute]);
+    
+    return { isAuthenticated, loading };
 }

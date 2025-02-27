@@ -1,9 +1,13 @@
 'use client';
+
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import MainLayout from '@/components/layouts/MainLayout';
+import { auth, provider } from '@/services/firebase';
+import { signInWithPopup } from 'firebase/auth';
+import { FcGoogle } from 'react-icons/fc';
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
@@ -25,6 +29,22 @@ export default function LoginPage() {
             } else {
                 setError('Login failed');
             }
+        }
+    };
+
+    const handleGoogleLogin = async () => {
+        setError('');
+
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            
+            if (user) {
+                router.push('/dashboard');
+            }
+        } catch (err) {
+            setError('Google login failed');
+            console.error(err);
         }
     };
 
@@ -76,6 +96,15 @@ export default function LoginPage() {
                         {loading ? 'Logging in...' : 'Login'}
                     </button>
                 </form>
+
+                <div className="mt-4">
+                    <button
+                        onClick={handleGoogleLogin}
+                        className="w-full py-2 px-4 flex items-center justify-center border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+                    >
+                        <FcGoogle className="text-xl mr-2" /> Sign in with Google
+                    </button>
+                </div>
 
                 <div className="mt-4 text-center">
                     <p>

@@ -5,10 +5,10 @@ import { useAuth } from '@/hooks/useAuth';
 import MainLayout from '@/components/layouts/MainLayout';
 
 export default function DashboardPage() {
-    const { isLoading } = useProtectedRoute();
+    const { loading } = useProtectedRoute();
     const { user } = useAuth();
 
-    if (isLoading) {
+    if (loading) {
         return (
             <MainLayout>
                 <div className="flex justify-center items-center h-64">

@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/hooks/useAuth';
 import MainLayout from '@/components/layouts/MainLayout';
+import { auth, provider } from '@/services/firebase';
+import { signInWithPopup } from 'firebase/auth';
+import { FcGoogle } from 'react-icons/fc';
 
 export default function RegisterPage() {
     const [name, setName] = useState('');
@@ -20,13 +23,29 @@ export default function RegisterPage() {
 
         try {
             await register({ name, email, password });
-            router.push('/login?registered=true');
+            router.push('/dashboard');
         } catch (err: unknown) {
             if (err instanceof Error) {
                 setError(err.message);
             } else {
                 setError('Registration failed');
             }
+        }
+    };
+
+    const handleGoogleRegister = async () => {
+        setError('');
+
+        try {
+            const result = await signInWithPopup(auth, provider);
+            const user = result.user;
+            
+            if (user) {
+                router.push('/dashboard');
+            }
+        } catch (err) {
+            setError('Google sign-up failed');
+            console.error(err);
         }
     };
 
@@ -49,7 +68,7 @@ export default function RegisterPage() {
                         <input
                             id="name"
                             type="text"
-                            className="w-full p-2 border border-gray-300 rounded-lg"
+                            className="w-full p-2 border border-gray-300 rounded-lg text-[#333]"
                             value={name}
                             onChange={(e) => setName(e.target.value)}
                             required
@@ -63,7 +82,7 @@ export default function RegisterPage() {
                         <input
                             id="email"
                             type="email"
-                            className="w-full p-2 border border-gray-300 rounded-lg"
+                            className="w-full p-2 border border-gray-300 rounded-lg text-[#333]"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
@@ -77,7 +96,7 @@ export default function RegisterPage() {
                         <input
                             id="password"
                             type="password"
-                            className="w-full p-2 border border-gray-300 rounded-lg"
+                            className="w-full p-2 border border-gray-300 rounded-lg text-[#333]"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                             required
@@ -93,6 +112,15 @@ export default function RegisterPage() {
                         {loading ? 'Registering...' : 'Register'}
                     </button>
                 </form>
+
+                <div className="mt-4">
+                    <button
+                        onClick={handleGoogleRegister}
+                        className="w-full py-2 px-4 flex items-center justify-center border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
+                    >
+                        <FcGoogle className="text-xl mr-2" /> Sign up with Google
+                    </button>
+                </div>
 
                 <div className="mt-4 text-center">
                     <p>
