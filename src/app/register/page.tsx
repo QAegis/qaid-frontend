@@ -1,136 +1,120 @@
-'use client';
+"use client";
+import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
+import { FcGoogle } from "react-icons/fc";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useAuth } from '@/hooks/useAuth';
-import MainLayout from '@/components/layouts/MainLayout';
-import { auth, provider } from '@/services/firebase';
-import { signInWithPopup } from 'firebase/auth';
-import { FcGoogle } from 'react-icons/fc';
+const RegisterForm = () => {
+    const [email, setEmail] = useState("");
+    const [step, setStep] = useState(1);
+    const [fullName, setFullName] = useState("");
+    const [password, setPassword] = useState("");
+    const [accountName, setAccountName] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [message, setMessage] = useState("");
+    const searchParams = useSearchParams();
 
-export default function RegisterPage() {
-    const [name, setName] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const router = useRouter();
-    const { register, loading } = useAuth();
-
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
-
-        try {
-            await register({ name, email, password });
-            router.push('/dashboard');
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError('Registration failed');
+    // Check if token is present in URL
+    useEffect(() => {
+        if (searchParams) {
+            const token = searchParams.get("token");
+            if (token) {
+                setStep(2); // Move to the next step
             }
         }
-    };
+    }, [searchParams]);
 
-    const handleGoogleRegister = async () => {
-        setError('');
+    // Handle email submission (Step 1)
+    const handleNext = async () => {
+        if (!email) return;
+        setLoading(true);
+        setMessage("");
 
         try {
-            const result = await signInWithPopup(auth, provider);
-            const user = result.user;
-            
-            if (user) {
-                router.push('/dashboard');
+            const response = await fetch("/api/send-email", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email }),
+            });
+
+            const result = await response.json();
+            if (result.success) {
+                setMessage("A verification link has been sent to your email.");
+            } else {
+                setMessage("Failed to send verification email.");
             }
-        } catch (err) {
-            setError('Google sign-up failed');
-            console.error(err);
+        } catch {
+            setMessage("An error occurred. Please try again.");
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <MainLayout>
-            <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-                <h1 className="text-2xl font-bold mb-6 text-center">Register</h1>
+        <div className="flex flex-col items-center justify-center h-screen bg-white">
+            <div className="p-6 bg-[#ECFFFB] rounded-xl shadow-md w-96">
+                <h2 className="text-2xl font-bold text-center mb-4">Register</h2>
 
-                {error && (
-                    <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
-                        {error}
-                    </div>
-                )}
+                {step === 1 && (
+                    <>
+                        <button className="w-full flex items-center justify-center gap-2 p-3 border rounded-md hover:bg-gray-100">
+                            <FcGoogle size={20} /> Sign up with Google
+                        </button>
+                        <div className="relative my-4 flex items-center">
+                            <div className="flex-grow border-t border-gray-400"></div>
+                            <span className="mx-4 text-gray-500">or</span>
+                            <div className="flex-grow border-t border-gray-400"></div>
+                        </div>
 
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2" htmlFor="name">
-                            Name
-                        </label>
                         <input
-                            id="name"
-                            type="text"
-                            className="w-full p-2 border border-gray-300 rounded-lg text-[#343434]"
-                            value={name}
-                            onChange={(e) => setName(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2" htmlFor="email">
-                            Email
-                        </label>
-                        <input
-                            id="email"
                             type="email"
-                            className="w-full p-2 border border-gray-300 rounded-lg text-[#333]"
+                            placeholder="Enter your work email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            required
+                            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#2D767F]"
                         />
-                    </div>
+                        <button
+                            onClick={handleNext}
+                            className="w-full mt-4 p-3 bg-[#2D767F] text-white rounded-md hover:bg-[#1E6262]"
+                            disabled={loading}
+                        >
+                            {loading ? "Sending..." : "Next"}
+                        </button>
 
-                    <div className="mb-6">
-                        <label className="block text-gray-700 mb-2" htmlFor="password">
-                            Password
-                        </label>
+                        {message && <p className="text-sm text-center text-gray-600 mt-2">{message}</p>}
+                    </>
+                )}
+
+                {step === 2 && (
+                    <>
                         <input
-                            id="password"
+                            type="text"
+                            placeholder="Full Name"
+                            value={fullName}
+                            onChange={(e) => setFullName(e.target.value)}
+                            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#2D767F] mt-4"
+                        />
+                        <input
                             type="password"
-                            className="w-full p-2 border border-gray-300 rounded-lg text-[#333]"
+                            placeholder="Password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
-                            required
-                            minLength={6}
+                            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#2D767F] mt-4"
                         />
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400"
-                        disabled={loading}
-                    >
-                        {loading ? 'Registering...' : 'Register'}
-                    </button>
-                </form>
-
-                <div className="mt-4">
-                    <button
-                        onClick={handleGoogleRegister}
-                        className="w-full py-2 px-4 flex items-center justify-center border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
-                    >
-                        <FcGoogle className="text-xl mr-2" /> Sign up with Google
-                    </button>
-                </div>
-
-                <div className="mt-4 text-center text-[#333]">
-                    <p>
-                        Already have an account?{' '}
-                        <Link href="/login" className="text-blue-600 hover:underline">
-                            Login
-                        </Link>
-                    </p>
-                </div>
+                        <input
+                            type="text"
+                            placeholder="Account Name"
+                            value={accountName}
+                            onChange={(e) => setAccountName(e.target.value)}
+                            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#2D767F] mt-4"
+                        />
+                        <button className="w-full mt-4 p-3 bg-[#2D767F] text-white rounded-md hover:bg-[#1E6262]">
+                            Continue
+                        </button>
+                    </>
+                )}
             </div>
-        </MainLayout>
+        </div>
     );
-}
+};
+
+export default RegisterForm;

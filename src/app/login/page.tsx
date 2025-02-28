@@ -1,120 +1,113 @@
-'use client';
+"use client";  
+import { useState } from "react";  
+import { useRouter } from "next/navigation";  
+import { FcGoogle } from "react-icons/fc";  
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import { useAuth } from '@/hooks/useAuth';
-import MainLayout from '@/components/layouts/MainLayout';
-import { auth, provider } from '@/services/firebase';
-import { signInWithPopup } from 'firebase/auth';
-import { FcGoogle } from 'react-icons/fc';
+const LoginForm = () => {  
+    const [email, setEmail] = useState("");  
+    const [step, setStep] = useState(1);  
+    const [companyName, setCompanyName] = useState("");  
+    const [password, setPassword] = useState("");  
+    const [error, setError] = useState("");  
+    const router = useRouter();  
 
-export default function LoginPage() {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [error, setError] = useState('');
-    const router = useRouter();
-    const { login, loading } = useAuth();
+    const handleNext = () => {  
+        if (!email.trim() || !email.includes("@")) {  
+            setError("Please enter a valid work email.");  
+            return;  
+        }  
+        setError("");  
+        setStep(2);  
+    };  
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setError('');
+    const handleVerifyCompany = () => {  
+        if (!companyName.trim()) {  
+            setError("Please enter your company name.");  
+            return;  
+        }  
+        setError("");  
+        setStep(3);  
+    };  
 
-        try {
-            await login({ email, password });
-            router.push('/dashboard');
-        } catch (err: unknown) {
-            if (err instanceof Error) {
-                setError(err.message);
-            } else {
-                setError('Login failed');
-            }
-        }
-    };
+    const handleLogin = () => {  
+        if (!password.trim()) {  
+            setError("Password is required.");  
+            return;  
+        }  
+        setError("");  
+        console.log("Logging in with:", { email, companyName, password });  
+        router.push("/dashboard");  
+    };  
 
-    const handleGoogleLogin = async () => {
-        setError('');
+    return (  
+        <div className="flex justify-center items-center min-h-screen bg-white">  
+            <div className="flex flex-col items-center p-6 rounded-xl w-96">  
+                <h1 className="text-[#2B3733] p-4 mt-6 text-center">Welcome Back</h1> {/* Page Title */}  
+                {step === 1 && (  
+                    <>  
+                        <label htmlFor="Email" className="text-[#2B3733] p-4">Enter Your Work Email</label>  
+                        <input  
+                            type="email"  
+                            placeholder="Work Email"  
+                            value={email}  
+                            onChange={(e) => setEmail(e.target.value)}  
+                            className="w-full p-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#2D767F]"  
+                        />  
+                        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}  
+                        <button onClick={handleNext} className="w-full mt-4 p-3 bg-[#2D767F] text-white rounded-md hover:bg-[#1E6262]">  
+                            Next  
+                        </button>  
+                        <p className="mt-4">— Or sign in with —</p>  
+                        <hr className="w-full border-[#2D767F] border-b-2 mb-4" /> {/* Extended Stroke */}  
+                        <button className="w-full flex items-center justify-center gap-2 p-3 border rounded-md hover:bg-gray-100">  
+                            <FcGoogle size={20} /> Sign in with Google  
+                        </button>  
+                        <p className="mt-4 text-sm">  
+                            Don’t have an account?{" "}  
+                            <span className="text-[#2D767F] cursor-pointer" onClick={() => router.push("/register")}>  
+                                Sign Up  
+                            </span>  
+                        </p>  
+                    </>  
+                )}  
 
-        try {
-            const result = await signInWithPopup(auth, provider);
-            const user = result.user;
-            
-            if (user) {
-                router.push('/dashboard');
-            }
-        } catch (err) {
-            setError('Google login failed');
-            console.error(err);
-        }
-    };
+                {step === 2 && (  
+                    <>  
+                        <input  
+                            type="text"  
+                            placeholder="Company Name"  
+                            value={companyName}  
+                            onChange={(e) => setCompanyName(e.target.value)}  
+                            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#2D767F]"  
+                        />  
+                        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}  
+                        <button onClick={handleVerifyCompany} className="w-full mt-4 p-3 bg-[#2D767F] text-white rounded-md hover:bg-[#1E6262]">  
+                            Verify Company  
+                        </button>  
+                        <p className="mt-4 text-sm text-[#2D767F] cursor-pointer">Forgot Company Name?</p>  
+                    </>  
+                )}  
 
-    return (
-        <MainLayout>
-            <div className="max-w-md mx-auto mt-10 p-6 bg-white rounded-lg shadow-lg">
-                <h1 className="text-2xl font-bold mb-6 text-center">Login</h1>
+                {step === 3 && (  
+                    <>  
+                        <input  
+                            type="password"  
+                            placeholder="Password"  
+                            value={password}  
+                            onChange={(e) => setPassword(e.target.value)}  
+                            className="w-full p-3 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#2D767F]"  
+                        />  
+                        {error && <p className="text-red-500 text-sm mt-2">{error}</p>}  
+                        <button onClick={handleLogin} className="w-full mt-4 p-3 bg-[#2D767F] text-white rounded-md hover:bg-[#1E6262]">  
+                            Sign In  
+                        </button>  
+                        <p className="mt-4 text-sm text-[#2D767F] cursor-pointer">Forgot Password?</p>  
+                        <p className="mt-2 text-sm text-[#2D767F] cursor-pointer">Login into another account</p>  
+                    </>  
+                )}  
+            </div>  
+        </div>  
+    );  
+};  
 
-                {error && (
-                    <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
-                        {error}
-                    </div>
-                )}
-
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label className="block text-gray-700 mb-2" htmlFor="email">
-                            Email
-                        </label>
-                        <input
-                            id="email"
-                            type="email"
-                            className="w-full p-2 border border-gray-300 rounded-lg text-[#333]"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <div className="mb-6">
-                        <label className="block text-gray-700 mb-2" htmlFor="password">
-                            Password
-                        </label>
-                        <input
-                            id="password"
-                            type="password"
-                            className="w-full p-2 border border-gray-300 rounded-lg text-[#333]"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-
-                    <button
-                        type="submit"
-                        className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-blue-400"
-                        disabled={loading}
-                    >
-                        {loading ? 'Logging in...' : 'Login'}
-                    </button>
-                </form>
-
-                <div className="mt-4">
-                    <button
-                        onClick={handleGoogleLogin}
-                        className="w-full py-2 px-4 flex items-center justify-center border border-gray-300 rounded-lg text-gray-700 hover:bg-gray-100"
-                    >
-                        <FcGoogle className="text-xl mr-2" /> Sign in with Google
-                    </button>
-                </div>
-
-                <div className="mt-4 text-center text-[#333]">
-                    <p>
-                        Don&apos;t have an account?{' '}
-                        <Link href="/register" className="text-blue-600 hover:underline">
-                            Register
-                        </Link>
-                    </p>
-                </div>
-            </div>
-        </MainLayout>
-    );
-}
+export default LoginForm;  
