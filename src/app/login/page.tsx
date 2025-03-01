@@ -45,22 +45,27 @@ const LoginForm = () => {
                 <h1 className="text-[#2B3733] p-4 mt-6 text-center">Welcome Back</h1> {/* Page Title */}  
                 {step === 1 && (  
                     <>  
-                        <label htmlFor="Email" className="text-[#2B3733] p-4">Enter Your Work Email</label>  
+                        <label htmlFor="Email" className="text-[#2B3733] p-2 text-sm">Enter Your Work Email</label>  
                         <input  
                             type="email"  
                             placeholder="Work Email"  
                             value={email}  
                             onChange={(e) => setEmail(e.target.value)}  
-                            className="w-full p-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-[#2D767F]"  
+                            className="w-full p-2 border placeholder:text-xs rounded-sm focus:outline-none focus:ring-2 focus:ring-[#B4F1F1]"  
                         />  
                         {error && <p className="text-red-500 text-sm mt-2">{error}</p>}  
-                        <button onClick={handleNext} className="w-full mt-4 p-3 bg-[#2D767F] text-white rounded-md hover:bg-[#1E6262]">  
+                        <button type="submit" onClick={handleNext} className="w-full mt-4 p-2 bg-[#2D767F] text-white rounded-sm hover:bg-[#1E6262]">  
                             Next  
                         </button>  
-                        <p className="mt-4">— Or sign in with —</p>  
-                        <hr className="w-full border-[#2D767F] border-b-2 mb-4" /> {/* Extended Stroke */}  
-                        <button className="w-full flex items-center justify-center gap-2 p-3 border rounded-md hover:bg-gray-100">  
-                            <FcGoogle size={20} /> Sign in with Google  
+
+                        <div className="relative my-4 flex items-center">
+                            <div className="flex-grow border-t border-gray-500"></div>
+                            <span className="mx-4 text-gray-500">or Sign In with</span>
+                            <div className="flex-grow border-t border-gray-500"></div>
+                        </div>
+
+                        <button type="submit" className="w-full flex items-center justify-center gap-2 p-2 border rounded-sm hover:bg-gray-100 text-[#2D767F]">  
+                            <FcGoogle size={20} /> Google  
                         </button>  
                         <p className="mt-4 text-sm">  
                             Don’t have an account?{" "}  

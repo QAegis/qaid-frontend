@@ -11,6 +11,7 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
+    "@next/font": "^14.2.15",
     "@reduxjs/toolkit": "^2.6.0",
     "axios": "^1.8.1",
     "firebase": "^11.4.0",

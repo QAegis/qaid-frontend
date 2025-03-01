@@ -1,12 +1,15 @@
 // pages/home.js
 'use client';
 import { useRouter } from 'next/navigation';
+import Navbar from '../components/Navbar';
 
 const HomePage = () => {
     const router = useRouter();
 
     return (
+        
         <div className="flex flex-col items-center justify-center h-screen bg-white font-[Montserrat]">
+            <Navbar />
             <h1 className="text-4xl font-bold text-[#2D767F] mb-6">Welcome to Our Platform</h1>
             <p className="text-lg text-gray-600 mb-8 font-[Poppins]">Your journey starts here.</p>
 
