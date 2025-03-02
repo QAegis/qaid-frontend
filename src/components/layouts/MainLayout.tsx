@@ -12,7 +12,7 @@ const MainLayout = ({ children }: MainLayoutProps) => {
     return (
         <div className="min-h-screen flex flex-col">
             <header className="bg-gray-800 text-white">
-                <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+                <div className= "container mx-auto px-4 py-4 flex justify-between items-center">
                     <Link href="/" className="text-xl font-bold">
                         QAID Platform
                     </Link>

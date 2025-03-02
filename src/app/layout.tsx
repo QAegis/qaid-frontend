@@ -1,11 +1,11 @@
 import { AuthProvider } from '@/hooks/useAuth';
-import { Inter } from 'next/font/google';
+import { Poppins } from "next/font/google";
 import './globals.css';
 import type { Metadata } from 'next';
 import { Providers } from '@/store/provider';
 import LayoutWrapper from '@/components/LayoutWrapper';
 
-const inter = Inter({ subsets: ['latin'] });
+const poppins = Poppins({ weight: ["400", "600"], subsets: ["latin"] });
 
 export const metadata: Metadata = {
   title: 'QAID Platform',
@@ -19,7 +19,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={inter.className}>
+      <body className={poppins.className}>
         <Providers>
           <AuthProvider>
             <LayoutWrapper>{children}</LayoutWrapper>
